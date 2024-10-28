@@ -4,7 +4,14 @@ pacman::p_load(sf,tidyverse,RSQLite,tmap,tmaptools)
 
 world <- st_read("World_Countries_(Generalized)_2402777631520798174/World_Countries_Generalized.shp")#利用sf包读取shp文件
 
-inequality_data <- read_csv("HDR23-24_Composite_indices_complete_time_series.csv")
+data <- read_csv("HDR23-24_Composite_indices_complete_time_series.csv")
+
+# 提取指定的几列
+inequality_data <- data[, c("iso3", "country", "region"，"gii_2010","gii_2019")]
+
+# 查看前几行
+head(inequality_data)
+
 inequality_data <- inequality_data %>%mutate(Inequality_Difference = gii_2019 - gii_2010)  #计算不平等指数的差异
 
 world_inequality <- world %>%

@@ -1,0 +1,25 @@
+setwd("D:/CASA/GIS/wk4_data")
+install.packages('pacman')
+pacman::p_load(sf,tidyverse,RSQLite,tmap,tmaptools)
+
+world <- st_read("World_Countries_(Generalized)_2402777631520798174/World_Countries_Generalized.shp")#利用sf包读取shp文件
+
+data <- read.csv("HDR23-24_Composite_indices_complete_time_series.csv")
+
+# 提取指定的几列
+inequality_data <- data[, c("iso3", "country", "region","gii_2010","gii_2019")]
+
+inequality_data$gii_change <- inequality_data$gii_2019 -inequality_data$gii_2010
+
+# 查看前几行
+head(inequality_data)
+
+write.csv(inequality_data, "inequality_data.csv", row.names = FALSE)
+
+inequality_data <- inequality_data %>%mutate(Inequality_Difference = gii_2019 - gii_2010)  #计算不平等指数的差异
+
+world_inequality <- world %>%
+  left_join(inequality_data, by = c("ISO" = "iso3"))  #连接shapefile和不平等指数
+
+tmap_mode("plot")
+qtm(world_inequality ,fill = "Inequality_Difference")#绘图
