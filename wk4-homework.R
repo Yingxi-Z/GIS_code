@@ -14,12 +14,11 @@ inequality_data$gii_change <- inequality_data$gii_2019 -inequality_data$gii_2010
 # 查看前几行
 head(inequality_data)
 
+#新建一个含有效数据的csv
 write.csv(inequality_data, "inequality_data.csv", row.names = FALSE)
-
-inequality_data <- inequality_data %>%mutate(Inequality_Difference = gii_2019 - gii_2010)  #计算不平等指数的差异
 
 world_inequality <- world %>%
   left_join(inequality_data, by = c("ISO" = "iso3"))  #连接shapefile和不平等指数
 
 tmap_mode("plot")
-qtm(world_inequality ,fill = "Inequality_Difference")#绘图
+qtm(world_inequality ,fill = "gii_change")#绘图
